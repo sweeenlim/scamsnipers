@@ -12,6 +12,8 @@
 │   ├── processed             # Final data for modeling after feature engineering
 │   └── raw                   # The original, immutable data dump
 │
+├── .env.template             # Template for .env file
+│ 
 ├── docs                      # Sphinx documentation
 │   
 ├── notebooks                 # Jupyter notebooks with naming
