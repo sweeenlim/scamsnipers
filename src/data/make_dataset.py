@@ -18,6 +18,10 @@ dataset_slug = os.getenv('KAGGLE_DATASET')
 if not dataset_slug:
     raise ValueError("KAGGLE_DATASET is not set in .env")
 
+print('Downloading dataset...')
+
 # Download and unzip to dataset_path
 command = f'kaggle datasets download -d {dataset_slug} --unzip -p "{dataset_path}"'
 os.system(command)
+
+print('Dataset downloaded successfully.')
