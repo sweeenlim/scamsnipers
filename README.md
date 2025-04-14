@@ -40,8 +40,7 @@
 │   │   ├── randomforest.py (SWEEEN)
 │   │   ├── tabfpn.py (NATALIE)
 │   │   ├── ensemble.py (YUCAI)
-│   │   ├── predict_model.py (NATALIE)
-│   │   └── train_model.py (YUCAI)
+│   │   └── predict_model.py (NATALIE)
 │   └── visualization         # Scripts to generate visualizations
 │       └── visualize.py (SWEEEN)
 │
