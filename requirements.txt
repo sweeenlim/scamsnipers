@@ -1,2 +1,6 @@
 kaggle
 python-dotenv
+pandas
+seaborn
+matplotlib
+plotly-express
