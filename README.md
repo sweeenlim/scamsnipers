@@ -8,9 +8,8 @@
 ├── README.md                 # Project documentation
 │
 ├── data                      # Data storage folder
-│   ├── external              # Data from third-party sources
-│   ├── interim               # Intermediate data that has been transformed
-│   ├── processed             # The final, canonical data sets for modeling
+│   ├── interim               # Intermediate data after data cleaning
+│   ├── processed             # Final data for modeling after feature engineering
 │   └── raw                   # The original, immutable data dump
 │
 ├── docs                      # Sphinx documentation
@@ -20,7 +19,7 @@
 ├── references.txt            # Data dictionaries, manuals, and other explanatory materials
 │
 ├── reports                   # Generated analysis reports as HTML, PDF, LaTeX, etc.
-│   └── figures               # Figures and graphics for reporting
+│   └── figures (MEIJIN)      # Figures and graphics for reporting
 │
 ├── requirements.txt          # Python dependencies for project
 │
@@ -29,14 +28,20 @@
 ├── src                       # Source code
 │   ├── __init__.py           # Makes `src` a Python module
 │   ├── data                  # Scripts to download or generate data
-│   │   └── make_dataset.py   #
+│   │   ├── make_dataset.py (FREEDY) 
+│   │   ├── clean.py (MARCUS) 
+│   │   └── sampling.py (SWEEEN)
 │   ├── features              # Scripts to build features from raw data
-│   │   └── build_features.py 
+│   │   ├── build_features.py (FREEDY)
 │   ├── models                # Scripts to train and predict with models
-│   │   ├── predict_model.py
-│   │   └── train_model.py
+│   │   ├── base_logreg.py (MARCUS)
+│   │   ├── randomforest.py (SWEEEN)
+│   │   ├── tabfpn.py (NATALIE)
+│   │   ├── ensemble.py (YUCAI)
+│   │   ├── predict_model.py (NATALIE)
+│   │   └── train_model.py (YUCAI)
 │   └── visualization         # Scripts to generate visualizations
-│       └── visualize.py
+│       └── visualize.py (SWEEEN)
 │
 └── tox.ini                   # Configuration file for running `tox` tests
 ```
