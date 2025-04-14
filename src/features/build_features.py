@@ -10,6 +10,36 @@ ROOT_DIR = Path(__file__).resolve().parents[2]
 # Define the path to the raw data directory
 RAW_DATA_DIR = ROOT_DIR / 'data' / 'interim'
 
+
+def transform_policy_bind_date(df):
+    df["incident_minus_policy_bind_date"] = (pd.to_datetime(df["incident_date"])-pd.to_datetime(df["policy_bind_date"])).dt.days
+    return df
+
+# Segment the age into different ranges
+def segment_age(df):
+    bins = list(range(15,66,5))
+    labels = ['15-20', '21-25', '26-30', '31-35', '36-40', '41-45', '46-50', '51-55', '56-60', '61-65']
+    df['age_range'] = pd.cut(df['age'], bins=bins, labels=labels, right=False)
+    df['age_range'] = df['age_range'].astype(str)
+    df['age_range'] = df['age'].apply(lambda age: 'young adults' if 15 <= age <= 25 else 'middle aged adults' if 26 <= age <= 45 else 'older adults')
+    return df
+
+# Segment the months as customer into different ranges
+def segment_months_as_customer(df):
+    bins = list(range(0, 481,60))
+
+    labels = ['0-60', '61-120', '121-180', '181-240', '241-300', '301-360', '361-420', '421-480']
+
+    df['months_as_customer_range'] = pd.cut(df['months_as_customer'], bins=bins, labels=labels, right=False)
+    df['months_as_customer_range'] = df['months_as_customer_range'].astype(str)
+    df['months_as_customer_range'] = pd.Categorical(df['months_as_customer_range'], categories=labels, ordered=True)
+    df['months_as_customer_range'] = df['months_as_customer'].apply(lambda months: 'short term' if 0 <= months <= 60 else 'mid term' if 61 <= months <= 300 else 'long term')
+    return df
+
+def transform_hobby(df):
+    df['insured_hobbies'] = df['insured_hobbies'].apply(lambda x: x if x == 'chess' or x == 'cross-fit' else 'others')
+    return df
+
 # Load data from the raw data directory
 def load_raw_data(filename):
     file_path = RAW_DATA_DIR / filename
@@ -41,11 +71,17 @@ def one_hot_encode_categorical_cols(df):
 
 
 def feature_engineering(df): 
+    df = transform_policy_bind_date(df) # transform policy bind date and incident date diff
+    df = segment_age(df) # segment age into ranges
+    df = segment_months_as_customer(df) # segment months as customer into ranges
+    df = transform_hobby(df) # transform hobbies into 3 categories
+    df = df.drop(['policy_number','policy_bind_date', 'incident_date','incident_location'], axis = 1)  
+    df = df.drop(['age', 'months_as_customer'], axis = 1) # drop the original columns
     df = encode_incident_sev(df) # encode incident severity
     df = combine_auto_cols(df) # combine auto columns
     df = one_hot_encode_categorical_cols(df) # one-hot encode categorical columns
 
-    # Trnsform the target variable 'fraud_reported' to binary
+    # Transform the target variable 'fraud_reported' to binary
     df['fraud_reported'] = df['fraud_reported'].apply(lambda x: 1 if x == 'Y' else 0)
 
     return df
@@ -62,6 +98,7 @@ def save_fe_data(df):
     return
 
 def main():
+    print('Starting feature engineering...')
     # Load the raw data
     df = load_raw_data('cleaned_data.csv')
     print(df)
@@ -69,7 +106,8 @@ def main():
     cleaned_df = feature_engineering(df)
     # Save the processed data
     save_fe_data(cleaned_df)
-    return
+    print('Feature engineering completed.')
+    
 
 if __name__ == "__main__":
     main()
