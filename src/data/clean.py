@@ -50,13 +50,13 @@ def clean_data(df):
 
 def save_processed_data(df):
     # Define the path to the processed data directory
-    PROCESSED_DATA_DIR = ROOT_DIR / 'data' / 'processed'
+    PROCESSED_DATA_DIR = ROOT_DIR / 'data' / 'interim'
     PROCESSED_DATA_DIR.mkdir(parents=True, exist_ok=True)
     
     # Save the cleaned data to the processed data directory
     file_path = PROCESSED_DATA_DIR / "cleaned_data.csv"
     df.to_csv(file_path, index=False)
-    print(f"Processed data saved to {file_path}")
+    print(f"Cleaned data saved to {file_path}")
     return
 
 def main():
