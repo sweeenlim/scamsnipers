@@ -6,6 +6,7 @@ import warnings
 import joblib
 import argparse
 import os
+import torch
 
 from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV, StratifiedKFold
 from sklearn.preprocessing import StandardScaler
@@ -19,43 +20,86 @@ from imblearn.over_sampling import SMOTE
 from imblearn.under_sampling import RandomUnderSampler
 from imblearn.pipeline import Pipeline
 
+from tabpfn import TabPFNClassifier
+
 # === Argparse ==
 # config for TabPFN to be included
 # python src/models/ensemble.py --substitute_model path/to/tabpfn_model.pkl
-parser = argparse.ArgumentParser(description="Train ensemble model with model substitution")
-parser.add_argument('--model', type=str, default=None, help="Which model to train and run")
-parser.add_argument('--substitute_model', type=str, default=None, help="Path to a pre-trained model to use instead of XGBoost")
+parser = argparse.ArgumentParser(description="train and optionally evaluate model")
+parser.add_argument('--model', type=str, default=None, choices=["logistic_regression", "tabpfn", "ensemble" ], help="choose model to train")
+parser.add_argument('--substitute_model', type=str, default=None, choices=["./tabpfn.pkl"], help="choose base model to use instead of XGBoost for building ensemble model")
+parser.add_argument('--eval', type=str, default=None, choices=["true", "false"], help="set true to evaluate model with test data")
 args = parser.parse_args()
 
-# === Baseline Logistic Regression ===
-if args.model == "baseline_logistic_regression":
-    print("Training baseline Logistic Regression")
-    df = pd.read_csv("data/interim/cleaned_data.csv")
+# Define helper functions
+def has_gpu():
+    return torch.cuda.is_available()
 
+def save_model(model, name: str):
+    path = f"src/models/{name}.pkl"
+    joblib.dump(model, path)
+    print(f"{name} model saved to {path}")
+
+def eval_model(model):
+    print(f"Evaluating {model} model...")
+    if model == "ensemble":
+        y_pred = stacked_clf.predict(X_test)
+    else:
+        y_pred = model.predict(X_test)
+
+    print("Classification Report:")
+    print(classification_report(y_test, y_pred))
+    print("ROC-AUC Score: {:.3f}".format(roc_auc_score(y_test, y_pred)))
+    print("Accuracy: {:.3f}".format(accuracy_score(y_test, y_pred)))
+    print("Confusion Matrix:")
+    print(confusion_matrix(y_test, y_pred))
+
+# === Baseline Logistic Regression ===
+if args.model == "logistic_regression":
+    print("Training baseline Logistic Regression")
+    # === Load & preprocess data ===
+    df = pd.read_csv("data/interim/cleaned_data.csv")
     target_col = "fraud_reported"
 
     X = df.drop(target_col, axis=1)
     X = X.drop(columns=X.select_dtypes(include=['object', 'string', 'category']).columns)
-
     y = df['fraud_reported'].map({"Y":1,"N":0})
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
+    # === Train model ===
     model = LogisticRegression(max_iter=1000)
     model.fit(X_train, y_train)
+    print(f"{args.model} Trained")
 
-    y_pred = model.predict(X_test)
-    print("Classification Report:")
-    print(classification_report(y_test, y_pred))
-    print("ROC-AUC Score: {:.4f}".format(roc_auc_score(y_test, y_pred)))
-    print("Accuracy: {:.4f}".format(accuracy_score(y_test, y_pred)))
-    print("Confusion Matrix:")
-    print(confusion_matrix(y_test, y_pred))
+    # === Save model ===
+    save_model(model, args.model)
+
+# === Train Tabular Prior-data Fitted Networks ===
+elif args.model == "tabpfn":
+    print("Training tabpfn model")
+    # === Load & preprocess data ===
+    df = pd.read_csv("data/processed/processed_data.csv")
+    target_col = "fraud_reported"
+    boolean_cols = df.select_dtypes(include=[bool]).columns # Convert bool columns to int because tabpfn expects numeric values
+    df[boolean_cols] = df[boolean_cols].astype(int)
+
+    X = df.drop(columns=[target_col])
+    y = df[target_col]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+    
+    # === Train model ===
+    model = TabPFNClassifier(device="cuda" if has_gpu() else "cpu")
+    model.fit(X_train, y_train)
+    print(f"{args.model} Trained")
+
+    # === Save Model ===
+    save_model(model, args.model)
 
 # === Ensemble ===
-if args.model == "ensemble":
+elif args.model == "ensemble":
     print("Training ensemble model")
     # === Load & preprocess data ===
-    df = pd.read_csv("data/processed/processed_df.csv")
+    df = pd.read_csv("data/processed/processed_data.csv")
     target_col = "fraud_reported"
 
     X = df.drop(columns=[target_col])
@@ -139,18 +183,13 @@ if args.model == "ensemble":
 
     stacked_clf.fit(X_train, y_train)
 
+    # === Save Final Model ===
+    save_model(stacked_clf, args.model)
+
     # === Evaluation ===
     y_pred = stacked_clf.predict(X_test)
-    y_prob = stacked_clf.predict_proba(X_test)[:, 1]
+    y_prob = stacked_clf.predict_proba(X_test)[:, 1] # not used?
 
-    print("Classification Report:")
-    print(classification_report(y_test, y_pred))
-    print("ROC-AUC Score: {:.4f}".format(roc_auc_score(y_test, y_prob)))
-    print("Accuracy: {:.4f}".format(accuracy_score(y_test, y_pred)))
-    print("Confusion Matrix:")
-    print(confusion_matrix(y_test, y_pred))
-
-    # === Save Final Model ===
-    path = "src/models/ensemble_model.pkl"
-    joblib.dump(stacked_clf, path)
-    print(f"Model saved to {path}")
+# === Evaluate Model ===
+if args.eval == "true":
+    eval_model(args.model)
