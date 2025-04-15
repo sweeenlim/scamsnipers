@@ -4,3 +4,7 @@ pandas
 seaborn
 matplotlib
 plotly-express
+scikit-learn
+xgboost
+imbalanced-learn
+tabpfn
