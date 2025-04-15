@@ -27,7 +27,7 @@ parser.add_argument('--model', type=str, default=None, help="Which model to trai
 parser.add_argument('--substitute_model', type=str, default=None, help="Path to a pre-trained model to use instead of XGBoost")
 args = parser.parse_args()
 
-# === Train Baseline Logistic Regression ===
+# === Baseline Logistic Regression ===
 if args.model == "baseline_logistic_regression":
     print("Training baseline Logistic Regression")
     df = pd.read_csv("data/interim/cleaned_data.csv")
@@ -51,6 +51,7 @@ if args.model == "baseline_logistic_regression":
     print("Confusion Matrix:")
     print(confusion_matrix(y_test, y_pred))
 
+# === Ensemble ===
 if args.model == "ensemble":
     print("Training ensemble model")
     # === Load & preprocess data ===
