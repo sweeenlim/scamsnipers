@@ -35,8 +35,7 @@
 │   ├── features              # Scripts to build features from raw data
 │   │   ├── build_features.py (FREEDY)
 │   ├── models                # Scripts to train and predict with models
-│   │   ├── model.py (YUCAI)
-│   │   └── predict_model.py (NATALIE)
+│   │   └── models.py (YUCAI, NATALIE, MARCUS)
 │   └── visualization         # Scripts to generate visualizations
 │       └── visualize.py (SWEEEN)
 │
