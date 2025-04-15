@@ -32,14 +32,10 @@
 │   ├── data                  # Scripts to download or generate data
 │   │   ├── make_dataset.py (FREEDY) 
 │   │   ├── clean.py (MARCUS) 
-│   │   └── sampling.py (SWEEEN)
 │   ├── features              # Scripts to build features from raw data
 │   │   ├── build_features.py (FREEDY)
 │   ├── models                # Scripts to train and predict with models
-│   │   ├── base_logreg.py (MARCUS)
-│   │   ├── randomforest.py (SWEEEN)
-│   │   ├── tabfpn.py (NATALIE)
-│   │   ├── ensemble.py (YUCAI)
+│   │   ├── model.py (YUCAI)
 │   │   └── predict_model.py (NATALIE)
 │   └── visualization         # Scripts to generate visualizations
 │       └── visualize.py (SWEEEN)
