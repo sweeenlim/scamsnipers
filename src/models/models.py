@@ -44,8 +44,10 @@ def eval_model(model):
     print(f"Evaluating {model} model...")
     if model == "ensemble":
         y_pred = stacked_clf.predict(X_test)
-    else:
-        y_pred = model.predict(X_test)
+    elif model == "logistic_regression":
+        y_pred = lr_model.predict(X_test)
+    elif model == "tabpfn":
+        y_pred = tabpfn_model.predict(X_test)
 
     print("Classification Report:")
     print(classification_report(y_test, y_pred))
@@ -67,12 +69,12 @@ if args.model == "logistic_regression":
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
     # === Train model ===
-    model = LogisticRegression(max_iter=1000)
-    model.fit(X_train, y_train)
+    lr_model = LogisticRegression(max_iter=1000)
+    lr_model.fit(X_train, y_train)
     print(f"{args.model} Trained")
 
     # === Save model ===
-    save_model(model, args.model)
+    save_model(lr_model, args.model)
 
 # === Train Tabular Prior-data Fitted Networks ===
 elif args.model == "tabpfn":
@@ -88,12 +90,12 @@ elif args.model == "tabpfn":
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
     
     # === Train model ===
-    model = TabPFNClassifier(device="cuda" if has_gpu() else "cpu")
-    model.fit(X_train, y_train)
+    tabpfn_model = TabPFNClassifier(device="cuda" if has_gpu() else "cpu")
+    tabpfn_model.fit(X_train, y_train)
     print(f"{args.model} Trained")
 
     # === Save Model ===
-    save_model(model, args.model)
+    save_model(tabpfn_model, args.model)
 
 # === Ensemble ===
 elif args.model == "ensemble":
