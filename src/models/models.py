@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import joblib
 import argparse
 import os
@@ -21,11 +22,11 @@ from tabpfn import TabPFNClassifier
 
 ''' 
 Sample command line usage:
-# Train TabPFN model
+# Train TabPFN model and print evaluation results
 python src/models/models.py --model tabpfn --eval true
 
 # config for TabPFN to be included in ensemble
-python src/models/ensemble.py --substitute_model path/to/tabpfn_model.pkl 
+python src/models/ensemble.py --substitute_model src/models/tabpfn_model.pkl 
 
 '''
 parser = argparse.ArgumentParser(description="train and optionally evaluate model")
@@ -259,7 +260,7 @@ elif args.model == "ensemble":
 
     # === Evaluation ===
     y_pred = stacked_clf.predict(X_test)
-    y_prob = stacked_clf.predict_proba(X_test)[:, 1] # not used?
+    y_prob = stacked_clf.predict_proba(X_test)[:, 1]
 
 # === Evaluate Model ===
 if args.eval == "true":

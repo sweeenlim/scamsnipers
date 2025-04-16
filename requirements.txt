@@ -1,6 +1,7 @@
 kaggle
 python-dotenv
 pandas
+numpy
 seaborn
 matplotlib
 plotly-express
