@@ -7,6 +7,7 @@ import joblib
 import argparse
 import os
 import torch
+import itertools
 
 from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV, StratifiedKFold
 from sklearn.preprocessing import StandardScaler
@@ -26,7 +27,7 @@ from tabpfn import TabPFNClassifier
 # config for TabPFN to be included
 # python src/models/ensemble.py --substitute_model path/to/tabpfn_model.pkl
 parser = argparse.ArgumentParser(description="train and optionally evaluate model")
-parser.add_argument('--model', type=str, default=None, choices=["logistic_regression", "tabpfn", "ensemble" ], help="choose model to train")
+parser.add_argument('--model', type=str, default=None, choices=["logistic_regression", "logistic_regression_tuned","tabpfn", "ensemble" ], help="choose model to train")
 parser.add_argument('--substitute_model', type=str, default=None, choices=["./tabpfn.pkl"], help="choose base model to use instead of XGBoost for building ensemble model")
 parser.add_argument('--eval', type=str, default=None, choices=["true", "false"], help="set true to evaluate model with test data")
 args = parser.parse_args()
@@ -48,6 +49,8 @@ def eval_model(model):
         y_pred = lr_model.predict(X_test)
     elif model == "tabpfn":
         y_pred = tabpfn_model.predict(X_test)
+    elif model == "logistic_regression_tuned":
+        y_pred = best_model.predict(X_test)
 
     print("Classification Report:")
     print(classification_report(y_test, y_pred))
@@ -75,6 +78,70 @@ if args.model == "logistic_regression":
 
     # === Save model ===
     save_model(lr_model, args.model)
+
+# === Hyperparameter-tuned Logistic Regression ===
+elif args.model == 'logistic_regression_tuned':
+    print("Training hyperparameter-tuned Logistic Regression")
+    target_col = "fraud_reported"
+    df = pd.read_csv("data/interim/cleaned_data.csv")
+    X = df.drop(target_col, axis=1)
+    X = X.drop(columns=X.select_dtypes(include=['object', 'string', 'category']).columns)
+    y = df['fraud_reported'].map({"Y":1,"N":0})
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # parameter search space
+    C_vals = np.logspace(-4, 2, 10)  # [0.0001 to 100]
+    penalties = ['l1', 'l2', 'elasticnet', 'none']
+    solvers = ['liblinear', 'saga', 'lbfgs', 'newton-cg']
+    weights = [None, 'balanced']
+    l1_ratios = [None, 0.1, 0.3, 0.5, 0.7, 0.9]
+
+    # Filter valid combinations
+    param_list = []
+    for C, penalty, solver, weight, l1_ratio in itertools.product(C_vals, penalties, solvers, weights, l1_ratios):
+        if penalty == 'l1' and solver not in ['liblinear', 'saga']:
+            continue
+        if penalty == 'elasticnet' and solver != 'saga':
+            continue
+        if penalty == 'none' and solver not in ['lbfgs', 'saga', 'newton-cg']:
+            continue
+        if penalty == 'l2' and solver not in ['liblinear', 'lbfgs', 'saga', 'newton-cg']:
+            continue
+        if penalty != 'elasticnet' and l1_ratio is not None:
+            continue
+        param_list.append({
+            'C': C,
+            'penalty': penalty,
+            'solver': solver,
+            'class_weight': weight,
+            'l1_ratio': l1_ratio
+        })
+
+    # Run RandomizedSearchCV
+    random_search = RandomizedSearchCV(
+        estimator=LogisticRegression(max_iter=1000),
+        param_distributions={'params': param_list},
+        scoring='recall',  # or 'roc_auc'
+        n_iter=50,  # try increasing to 100+ if needed
+        cv=5,
+        verbose=2,
+        random_state=42,
+        n_jobs=-1
+    )
+
+    # unpack 'params' dicts
+    class UnpackLogisticRegression(LogisticRegression):
+        def set_params(self, **params):
+            subparams = params.get("params", {})
+            return super().set_params(**subparams)
+
+    random_search.estimator = UnpackLogisticRegression()
+
+    random_search.fit(X_train, y_train)
+    best_model = random_search.best_estimator_
+    
+    # === Save model ===
+    save_model(best_model, args.model)
 
 # === Train Tabular Prior-data Fitted Networks ===
 elif args.model == "tabpfn":
