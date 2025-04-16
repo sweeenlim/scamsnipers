@@ -1,19 +1,15 @@
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-import warnings
 import joblib
 import argparse
 import os
 import torch
 
-from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV, StratifiedKFold
+from sklearn.model_selection import train_test_split, RandomizedSearchCV, StratifiedKFold
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, StackingClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
-from sklearn.metrics import classification_report, roc_auc_score, accuracy_score, roc_curve, confusion_matrix
+from sklearn.metrics import classification_report, roc_auc_score, accuracy_score, confusion_matrix
 
 from xgboost import XGBClassifier
 from imblearn.over_sampling import SMOTE
@@ -22,9 +18,15 @@ from imblearn.pipeline import Pipeline
 
 from tabpfn import TabPFNClassifier
 
-# === Argparse ==
-# config for TabPFN to be included
-# python src/models/ensemble.py --substitute_model path/to/tabpfn_model.pkl
+''' 
+Sample command line usage:
+# Train TabPFN model
+python src/models/models.py --model tabpfn --eval true
+
+# config for TabPFN to be included in ensemble
+python src/models/ensemble.py --substitute_model path/to/tabpfn_model.pkl 
+
+'''
 parser = argparse.ArgumentParser(description="train and optionally evaluate model")
 parser.add_argument('--model', type=str, default=None, choices=["logistic_regression", "tabpfn", "ensemble" ], help="choose model to train")
 parser.add_argument('--substitute_model', type=str, default=None, choices=["./tabpfn.pkl"], help="choose base model to use instead of XGBoost for building ensemble model")
