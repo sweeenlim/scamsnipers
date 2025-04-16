@@ -13,15 +13,16 @@
 │   └── raw                   # The original, immutable data dump
 │
 ├── .env.template             # Template for .env file
-│ 
+│
 ├── docs                      # Sphinx documentation
-│   
+│
 ├── notebooks                 # Jupyter notebooks with naming
 │
 ├── references.txt            # Data dictionaries, manuals, and other explanatory materials
 │
 ├── reports                   # Generated analysis reports as HTML, PDF, LaTeX, etc.
-│   └── figures (MEIJIN)      # Figures and graphics for reporting
+│   ├── report.md (MEIJIN)    # Markdown to display visualizations
+│   └── figures               # Figures and graphics for reporting
 │
 ├── requirements.txt          # Python dependencies for project
 │
@@ -30,8 +31,8 @@
 ├── src                       # Source code
 │   ├── __init__.py           # Makes `src` a Python module
 │   ├── data                  # Scripts to download or generate data
-│   │   ├── make_dataset.py (FREEDY) 
-│   │   ├── clean.py (MARCUS) 
+│   │   ├── make_dataset.py (FREEDY)
+│   │   ├── clean.py (MARCUS)
 │   ├── features              # Scripts to build features from raw data
 │   │   ├── build_features.py (FREEDY)
 │   ├── models                # Scripts to train and predict with models
