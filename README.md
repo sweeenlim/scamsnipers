@@ -21,11 +21,12 @@ This project provides a comprehensive solution for detecting insurance fraud cla
 - [Conclusion](#conclusion)  
 - [How to Run](#how-to-run)  
 - [Contributors](#contributors)  
-- [References](#references)  
+- [References](#references)
+- [License](#license)  
 
 ---
 
-## 📌 Introduction  
+##  Introduction  
 
 Insurance fraud, particularly in automobile claims, leads to significant financial losses. In Singapore alone, approximately **20% of motor insurance claims involve fraud** (GIA, 2018). This project aims to leverage machine learning models to classify claims as fraudulent or legitimate, offering decision support in insurance operations.
 
@@ -41,15 +42,13 @@ Insurance fraud, particularly in automobile claims, leads to significant financi
 ├── data                      # Data storage folder
 │   ├── interim               # Intermediate data after data cleaning
 │   ├── processed             # Final data for modeling after feature engineering
-│   └── raw                   # The original, immutable data dump
+│   └──raw                   # The original, immutable data dump
 │
 ├── .env.template             # Template for .env file
 │
 ├── docs                      # Sphinx documentation
 │
 ├── notebook                  # Jupyter notebook for entire pipeline
-│
-├── references.txt            # Data dictionaries, manuals, and other explanatory materials
 │
 ├── reports                   # Generated analysis reports as HTML, PDF, LaTeX, etc.
 │   ├── report.md             # Markdown to display visualizations
@@ -63,20 +62,18 @@ Insurance fraud, particularly in automobile claims, leads to significant financi
 │   ├── data                  # Scripts to download or generate data
 │   │   ├── make_dataset.py 
 │   │   ├── clean.py 
-│   │   ├── datadictionary.txt 
+│   │   ├── data_dictionary.txt 
 │   ├── features              # Scripts to build features from raw data
 │   │   ├── build_features.py 
 │   ├── models                # Scripts to train and predict with models
 │   │   └── models.py 
 │   └── visualization         # Scripts to generate visualizations
 │       └── visualize.py
-│
-└── tox.ini                   # Configuration file for running `tox` tests
 
 ```
 ---
 
-## 📊 Dataset  
+##  Dataset  
 
 - **Name:** `insurance_claims.csv`  
 - **Size:** 1,000 rows × 40 columns  
@@ -91,7 +88,7 @@ Preprocessing steps included:
 
 ---
 
-## 🛠️ Methods  
+##  Methods  
 
 - **Exploratory Data Analysis (EDA)** to validate hypotheses about fraud patterns  
 - **Feature Engineering:** Created derived features like `incident_minus_policy_bind_date`  
@@ -100,7 +97,7 @@ Preprocessing steps included:
 
 ---
 
-## 🤖 Models  
+##  Models  
 
 1. **Baseline:** Logistic Regression  
 2. **Challenger 1:** Random Forest  
@@ -111,7 +108,7 @@ Preprocessing steps included:
 
 ---
 
-## 📈 Results  
+##  Results  
 
 | Model                        | Accuracy | Precision | Recall | F1-Score | AUC-ROC |
 |:----------------------------|:----------|:-----------|:--------|:----------|:-----------|
@@ -122,7 +119,7 @@ Preprocessing steps included:
 
 ---
 
-## 🏛️ Use Case  
+##  Use Case  
 
 This fraud detection system can be integrated into an insurance company’s workflow:
 
@@ -134,28 +131,36 @@ This fraud detection system can be integrated into an insurance company’s work
 
 ---
 
-## 📌 Conclusion  
+##  Conclusion  
 
 The ensemble model combining stacking and similarity matching achieved the best performance. It provides a scalable, interpretable, and industry-relevant approach for fraud detection in insurance.
 
 ---
 
-## 🖥️ How to Run  
+##  How to Run  
 
 1. Install dependencies:
    ```bash
    pip install -r requirements.txt
 
-## 👨‍💻 Contributors
+## Contributors
 
-Choy Zhen Wen Marcus
+- Choy Zhen Wen Marcus
+- Chew Yu Cai
+- Freedy Tan Wei You
+- Lau Mei Jin
+- Lim Swee En
+- Low Jia Li Natalie
 
-Chew Yu Cai
+## References
+- Franceschi, L., Donini, M., Perrone, V., Klein, A., Archambeau, C., Seeger, M., Pontil, M., & Frasconi, P. (2024). Hyperparameter optimization in machine learning. arXiv. https://doi.org/10.48550/arXiv.2410.22854
+- General Insurance Association of Singapore (2018). Motor Insurance Fraud - Protect Yourself. https://gia.org.sg/images/resources/For-Consumers-PDF-file/CASE-2018-motorfraud.pdf 
+- H2O.ai (2016, June 16). Hyperparameter optimization in H2O: Grid search, random search and the future.  https://h2o.ai/blog/hyper-parameter-optimization-in-h2o-grid-search-random-search-and-the-future/
+- Hollmann, N., Müller, S., Eggensperger, K., & Hutter, F. (2023, September 16). Tabpfn: A transformer that solves small tabular classification problems in a Second. arXiv. https://arxiv.org/abs/2207.01848 
+- Press Release - General Insurance Sector Achieves Overall Continued Growth of 10.1%, Protecting and Supporting Motoring Public Remains Key Focus. General Insurance Association of Singapore. (2024, March 18). https://gia.org.sg/agents/media-center/company-news/565-gi-sector-results-2023.html#:~:text=%2D%20Increase%20in%20net%20incurred%20claims,11.2%25%20to%20S$262.9%20million. 
+- Residentmario. (2018, April 14). Oversampling with smote and ADASYN. Kaggle. https://www.kaggle.com/code/residentmario/oversampling-with-smote-and-adasyn 
+- Singapore Police Force. Annual Road Traffic Situation 2024 . Singapore Police Force. (2025). https://www.police.gov.sg/media-room/statistics?filter=2DDE3860D1BB4FD6AE91F9B08CFA1E45 
 
-Freedy Tan Wei You
 
-Lau Mei Jin
-
-Lim Swee En
-
-Low Jia Li Natalie
+## License
+This project is licensed under the [MIT License](LICENSE).
