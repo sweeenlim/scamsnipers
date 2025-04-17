@@ -1,0 +1,11 @@
+kaggle
+python-dotenv
+pandas
+numpy
+seaborn
+matplotlib
+plotly-express
+scikit-learn
+xgboost
+imbalanced-learn
+tabpfn

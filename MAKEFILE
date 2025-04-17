@@ -1,0 +1,53 @@
+# Makefile for project tasks
+
+# Define directories
+SRC_DIR=src
+DATA_DIR=data
+PROCESSED_DATA_DIR=$(DATA_DIR)/processed
+MODELS_DIR=models
+FIGURES_DIR=reports/figures
+
+# Default target (when `make` is run without arguments)
+all: train
+
+# Data preparation: Make dataset from raw data
+data:
+    @echo "Preparing dataset..."
+    python $(SRC_DIR)/data/make_dataset.py
+
+# Training: Train the model using prepared data
+train: data
+    @echo "Training model..."
+    python $(SRC_DIR)/models/train_model.py
+
+# Predicting: Use trained model to make predictions
+predict:
+    @echo "Making predictions..."
+    python $(SRC_DIR)/models/predict_model.py
+
+# Visualization: Generate visualizations (e.g., exploratory analysis)
+visualize:
+    @echo "Generating visualizations..."
+    python $(SRC_DIR)/visualization/visualize.py
+
+# Clean: Clean up any generated files, models, and reports
+clean:
+    @echo "Cleaning up generated files..."
+    rm -rf $(PROCESSED_DATA_DIR)/*.csv
+    rm -rf $(MODELS_DIR)/*
+    rm -rf $(FIGURES_DIR)/*
+
+# Install dependencies: Install all the Python packages required for the project
+install:
+    @echo "Installing dependencies..."
+    pip install -r requirements.txt
+
+# Show available targets
+help:
+    @echo "Available targets:"
+    @echo "  data       - Prepare the dataset"
+    @echo "  train      - Train the model"
+    @echo "  predict    - Make predictions"
+    @echo "  visualize  - Generate visualizations"
+    @echo "  clean      - Clean up intermediate and final results"
+    @echo "  install    - Install project dependencies"
