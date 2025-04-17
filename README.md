@@ -1,5 +1,8 @@
 # scamsnipers
 
+## Overview 
+This project provides a comprehensive solution for detecting insurance fraud claims ([Kaggle](https://www.kaggle.com/code/buntyshah/insurance-fraud-claims-detection)) using machine learning techniques. The approach covers the data science pipeline, from initial data analysis and exploration to feature engineering and model development. The focus is to build a robust fraud detection system, to reduce operational costs and enhance decision-making processes within insurance companies.
+
 ## Project Structure
 
 ```plaintext
@@ -16,7 +19,7 @@
 │
 ├── docs                      # Sphinx documentation
 │
-├── notebooks                 # Jupyter notebooks with naming
+├── notebook                  # Jupyter notebook for entire pipeline
 │
 ├── references.txt            # Data dictionaries, manuals, and other explanatory materials
 │
@@ -29,16 +32,18 @@
 ├── setup.py                  # Makes project installable with `pip install -e .`
 │
 ├── src                       # Source code
-│   ├── __init__.py           # Makes `src` a Python module
 │   ├── data                  # Scripts to download or generate data
-│   │   ├── make_dataset.py (FREEDY)
-│   │   ├── clean.py (MARCUS)
+│   │   ├── make_dataset.py 
+│   │   ├── clean.py 
+│   │   ├── datadictionary.txt 
 │   ├── features              # Scripts to build features from raw data
-│   │   ├── build_features.py (FREEDY)
+│   │   ├── build_features.py 
 │   ├── models                # Scripts to train and predict with models
-│   │   └── models.py (YUCAI, NATALIE, MARCUS)
+│   │   └── models.py 
 │   └── visualization         # Scripts to generate visualizations
-│       └── visualize.py (SWEEEN)
+│       └── visualize.py
 │
 └── tox.ini                   # Configuration file for running `tox` tests
 ```
+## Set up
+To include when MAKEFILE is done
