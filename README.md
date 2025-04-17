@@ -24,7 +24,7 @@ This project provides a comprehensive solution for detecting insurance fraud cla
 ├── references.txt            # Data dictionaries, manuals, and other explanatory materials
 │
 ├── reports                   # Generated analysis reports as HTML, PDF, LaTeX, etc.
-│   ├── report.md (MEIJIN)    # Markdown to display visualizations
+│   ├── report.md             # Markdown to display visualizations
 │   └── figures               # Figures and graphics for reporting
 │
 ├── requirements.txt          # Python dependencies for project
