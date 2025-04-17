@@ -139,9 +139,42 @@ The ensemble model combining stacking and similarity matching achieved the best 
 
 ##  How to Run  
 
-1. Install dependencies:
+### 1. Install dependencies:
    ```bash
    pip install -r requirements.txt
+   ```
+
+
+### 2. Model Training and Evaluation
+
+#### Baseline Logistic Regression
+
+```bash
+python src/models/models.py --model logistic_regression --eval true
+```
+
+#### Tuned Logistic Regression
+
+```bash
+python src/models/models.py --model logistic_regression_tuned --eval true
+```
+
+#### TabPFN
+```bash
+python src/models/models.py --model tabpfn --eval true
+```
+
+#### Ensemble (Stacking Classifier)
+Using default XGBoost:
+```bash
+python src/models/models.py --model ensemble --eval true
+```
+
+Using a custom model (e.g., trained TabPFN):
+```bash
+python src/models/models.py --model ensemble --substitute_model src/models/tabpfn_model.pkl --eval true
+```
+
 
 ## Contributors
 
