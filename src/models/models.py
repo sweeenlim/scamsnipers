@@ -185,21 +185,22 @@ elif args.model == "ensemble":
     )
     print("Done Cleaning Data")
 
-    # === Train Random Forest ===
-    rf_search = RandomizedSearchCV(
-        estimator=RandomForestClassifier(random_state=42),
+    # === Train XGBoost===
+    print("Training XGBoost model")
+    xgb_search = RandomizedSearchCV(
+        estimator=XGBClassifier(random_state=42, use_label_encoder=False, eval_metric='logloss'),
         param_distributions={
-            'n_estimators': [50, 100, 200],
-            'max_depth': [3, 5, 7, None],
-            'min_samples_split': [2, 5, 8],
-            'min_samples_leaf': [1, 2, 4],
-            'max_features': ['sqrt', 'log2']
+            'n_estimators': [50, 100, 150],
+            'learning_rate': [0.01, 0.05, 0.1],
+            'max_depth': [3, 5, 7],
+            'subsample': [0.8, 1.0],
+            'colsample_bytree': [0.8, 1.0]
         },
         n_iter=10, cv=3, scoring='roc_auc', n_jobs=-1, random_state=42
     )
-    rf_search.fit(X_train, y_train)
-    best_rf = rf_search.best_estimator_
-    print("Random Forest Trained")
+    xgb_search.fit(X_train, y_train)
+    best_xgb = xgb_search.best_estimator_
+    print("XGBoost Trained")
 
     # === Train Gradient Boosting ===
     gb_search = RandomizedSearchCV(
@@ -223,25 +224,25 @@ elif args.model == "ensemble":
         model_name = os.path.splitext(os.path.basename(args.substitute_model))[0]
         print("Sub Model/ TabPFN Loaded")
     else:
-        print("Training XGBoost model")
-        xgb_search = RandomizedSearchCV(
-            estimator=XGBClassifier(random_state=42, use_label_encoder=False, eval_metric='logloss'),
+        # === Train Random Forest ===
+        model_name = 'rf'
+        rf_search = RandomizedSearchCV(
+            estimator=RandomForestClassifier(random_state=42),
             param_distributions={
-                'n_estimators': [50, 100, 150],
-                'learning_rate': [0.01, 0.05, 0.1],
-                'max_depth': [3, 5, 7],
-                'subsample': [0.8, 1.0],
-                'colsample_bytree': [0.8, 1.0]
+                'n_estimators': [50, 100, 200],
+                'max_depth': [3, 5, 7, None],
+                'min_samples_split': [2, 5, 8],
+                'min_samples_leaf': [1, 2, 4],
+                'max_features': ['sqrt', 'log2']
             },
             n_iter=10, cv=3, scoring='roc_auc', n_jobs=-1, random_state=42
         )
-        xgb_search.fit(X_train, y_train)
-        best_substitute = xgb_search.best_estimator_
-        model_name = 'xgb'
-        print("XGBoost Trained")
-
+        rf_search.fit(X_train, y_train)
+        best_substitute = rf_search.best_estimator_
+        print("Random Forest Trained")
+        
     # === Stacking Classifier ===
-    estimators = [('rf', best_rf), ('gb', best_gb), (model_name, best_substitute)]
+    estimators = [('xgb', best_xgb), ('gb', best_gb), (model_name, best_substitute)]
     meta_learner = SVC(kernel='linear', probability=True, random_state=42)
 
     stacked_clf = StackingClassifier(
