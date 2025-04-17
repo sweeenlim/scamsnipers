@@ -6,7 +6,7 @@
 | insured_zip                        | Integer | Zip code of the insured individual                    |
 | capital-gains                      | Integer | Capital gains reported by the insured                 |
 | capital-loss                       | Integer | Capital losses reported by the insured                |
-| incident_hour_of_the_day          | Integer | Hour of the day when the incident occurred (0–23)     |
+| incident_hour_of_the_day          | Integer | Hour of the day when the incident occurred (0–23)      |
 | number_of_vehicles_involved        | Integer | Number of vehicles involved in the incident           |
 | bodily_injuries                    | Integer | Number of bodily injuries reported                    |
 | witnesses                          | Integer | Number of witnesses to the incident                   |
@@ -19,11 +19,11 @@
 | incident_severity_encoded          | Float   | Encoded severity level of the incident                |
 | fraud_reported                     | Boolean | Whether fraud was reported (1 = Yes, 0 = No)          |
 | policy_state_IN, policy_state_OH   | Boolean | State where the policy was issued (multi-hot)         |
-| policy_csl_250/500, policy_csl_500/1000 | Boolean | Combined single limit options                   |
+| policy_csl_250/500, policy_csl_500/1000 | Boolean | Combined single limit options                    |
 | insured_sex_MALE                   | Boolean | Indicates if the insured is male                      |
 | insured_education_level_*          | Boolean | One-hot encoding of education levels                  |
 | insured_occupation_*               | Boolean | One-hot encoding of occupation types                  |
-| insured_hobbies_cross-fit, insured_hobbies_others | Boolean | One-hot encoding of hobbies             |
+| insured_hobbies_cross-fit, insured_hobbies_others | Boolean | One-hot encoding of hobbies            |
 | insured_relationship_*             | Boolean | One-hot encoding of relationship to policyholder      |
 | incident_type_*                    | Boolean | One-hot encoding of incident types                    |
 | collision_type_*                   | Boolean | One-hot encoding of collision types                   |
