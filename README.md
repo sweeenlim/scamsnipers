@@ -56,8 +56,6 @@ Insurance fraud, particularly in automobile claims, leads to significant financi
 │
 ├── requirements.txt          # Python dependencies for project
 │
-├── setup.py                  # Makes project installable with `pip install -e .`
-│
 ├── src                       # Source code
 │   ├── data                  # Scripts to download or generate data
 │   │   ├── make_dataset.py 
